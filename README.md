@@ -11,7 +11,7 @@ Then run `Tetris.py` and have fun :)
 
 ## Features
 
-![Bildschirmfoto_2022-03-12_20-03-20](https://user-images.githubusercontent.com/98593245/158031397-626c51a1-960b-4464-96ea-1da6b71b5f54.png)
+![Bildschirmfoto_2022-03-12_20-07-05](https://user-images.githubusercontent.com/98593245/158031498-ca1a6a07-a166-47f1-8f3f-c2f9c8e9b5e2.png)
 
 - all shapes (I,J,L,O,S,T,Z) included and have also different colors
 - you can **Rotate** (`Arrow-Up`-Key) and **move** the Tetromino to **left** (`Left-Arrow`-Key) and **right** (`Right-Arrow`-Key) Side and also **down** with the `Down-Arrow`-Key
