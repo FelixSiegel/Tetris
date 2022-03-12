@@ -289,7 +289,7 @@ def gameOver():
     global tetrominos, count, fall_time, move_count, falled, userMoved, FPS
     count = 0
     """Function which called, if the game is over"""
-    debug("Punkte: " + str(POINTS))
+    debug("Points: " + str(POINTS))
     debug("Game Over!", text_size=TILESIZE, centered=True)
     while True:
         count += 1
@@ -426,7 +426,7 @@ while True:
             c_tetromino.get_shape()))  # draw Tetrominos
 
         debug(str(round(clock.get_fps())) + " fps")     # show FPS
-        debug("Punkte: " + str(POINTS), pos=(10, 25))     # show Points
+        debug("Points: " + str(POINTS), pos=(10, 25))     # show Points
 
         if count % fall_time == 0:
             falled = not(c_tetromino.fall())
