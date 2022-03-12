@@ -230,7 +230,7 @@ class Tetromino():
     def __init__(self, shape, color):
         self.shape = shape
         self.color = color
-        self.x = WIDTH//2-TILESIZE*2  # entspricht der mitte
+        self.x = (WIDTH//TILESIZE//2) * TILESIZE - TILESIZE*2 # entspricht der mitte
         self.y = 0
         self.rotation = 0
         self.c_element = shape[self.rotation]  # derzeitiges Shape
@@ -286,7 +286,7 @@ def drawTetrominos(tetros):
 # =============================================================================
 
 def gameOver():
-    global tetrominos, count, fall_time, move_count, falled, userMoved, FPS
+    global tetrominos, count, fall_time, move_count, falled, userMoved, FPS, POINTS
     count = 0
     """Function which called, if the game is over"""
     debug("Points: " + str(POINTS))
@@ -301,6 +301,7 @@ def gameOver():
                 if count >= FPS: # cou can restart only after 1sec, that you cant spam
                     # reset all for restart (without c_tetromino, cause it doesn't fall yet)
                     tetrominos = {}
+                    POINTS = 0
                     count = 0
                     fall_time = FPS//3
                     move_count = [0, 0]
