@@ -1,0 +1,5 @@
+{ 
+    "dimensions": (600, 950),
+    "FPS": 60,
+    "tilesize": 50
+}
