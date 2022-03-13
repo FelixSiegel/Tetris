@@ -15,6 +15,7 @@ Then run `Tetris.py` and have fun :)
 
 - all shapes (I,J,L,O,S,T,Z) included and have also different colors
 - you can **Rotate** (`Arrow-Up`-Key) and **move** the Tetromino to **left** (`Left-Arrow`-Key) and **right** (`Right-Arrow`-Key) Side and also **down** with the `Down-Arrow`-Key
+- with the `Space`-Key you can drop the falling Tetromino to the bottom
 - collides with Border and other Tetrominos will dectected
 - filled rows are detected and deleted + rows above will fallen
 - you can Pause the Game with `p`-Key and resume by pressing any key
