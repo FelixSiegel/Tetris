@@ -318,7 +318,7 @@ def pause():
     """Function which called if the game is paused"""
     screen.fill("black")
     debug("Paused!", text_size=TILESIZE, centered=True, offset=-0.5)
-    debug("Press and key to continue",
+    debug("Press any key to continue",
           text_size=TILESIZE, centered=True, offset=0.5)
     while True:
         for event in pygame.event.get():  # cheking for events
@@ -344,6 +344,7 @@ move_count = [0, 0] # need, that the moving isn't to speedy
 # =============================================================================
 # Main Game-Loop:
 # =============================================================================
+
 
 while True:
     count += 1
