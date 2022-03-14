@@ -28,8 +28,9 @@ try:
 except: # if file not found or not correct
     settings = { 
                 "dimensions": "auto",
-                "FPS": 60,
-                "tilesize": "auto"
+                "tilesize": "auto",
+                "fps": 60,
+                "windowframe": "standart"
                 }
 
 # =============================================================================
@@ -59,14 +60,17 @@ if settings["dimensions"] == "auto": # if the dimensions set to automaticly
 WIDTH = settings["dimensions"][0]
 HEIGTH = settings["dimensions"][1]
 TILESIZE = settings["tilesize"]
-FPS = settings["FPS"]
+FPS = settings["fps"]
 POINTS = 0
 
 # =============================================================================
-# Init pygame
+# Setup Pygame
 # =============================================================================
-# pygame.init()
-screen = pygame.display.set_mode((WIDTH, HEIGTH), pygame.NOFRAME)
+
+if settings["windowframe"] == "noframe":
+    screen = pygame.display.set_mode((WIDTH, HEIGTH), pygame.NOFRAME)
+else:
+    screen = pygame.display.set_mode((WIDTH, HEIGTH))
 pygame.display.set_caption('Tetris')
 clock = pygame.time.Clock()
 
