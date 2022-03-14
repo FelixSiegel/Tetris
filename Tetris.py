@@ -10,8 +10,10 @@ import pygame
 from sys import exit as close_program
 from random import choice
 
+pygame.init()
+
 # =============================================================================
-# trying to read settings file
+# try to read settings file
 # =============================================================================
 
 try:
@@ -19,15 +21,36 @@ try:
     settings = eval(fd.read())
     fd.close()
     
-    if settings["dimensions"][0] % settings["tilesize"] != 0 or \
-        settings["dimensions"][1] % settings["tilesize"] != 0:
-        raise ValueError
+    if settings["dimensions"] != "auto":
+        if settings["dimensions"][0] % settings["tilesize"] != 0 or \
+            settings["dimensions"][1] % settings["tilesize"] != 0:
+            raise ValueError
 except: # if file not found or not correct
     settings = { 
-                "dimensions": (600, 950),
+                "dimensions": "auto",
                 "FPS": 60,
-                "tilesize": 50
+                "tilesize": "auto"
                 }
+
+# =============================================================================
+# If some Values set to auto -> automaticly set them
+# =============================================================================
+
+if settings["dimensions"] == "auto": # if the dimensions set to automaticly
+
+    m_width, m_height = pygame.display.list_modes()[0] # get max height and width
+    
+    if settings["tilesize"] == "auto":
+        # if auto tilesizing on: set it so that 20 rows fit into it
+        settings["tilesize"] = (m_height - m_height%20) // 20 
+        
+    # set window height to max possible with one row place
+    m_height -= m_height%settings["tilesize"] + settings["tilesize"]
+    m_width = int((m_height/10)*6) # set window width to 6/10 of the height
+    # make sure that (width % tilesize) equals zero:
+    m_width += settings["tilesize"] - m_width%settings["tilesize"] 
+    settings["dimensions"] = (m_width, m_height) # confirm new dimensions
+        
 
 # =============================================================================
 # set initial variables
@@ -42,8 +65,8 @@ POINTS = 0
 # =============================================================================
 # Init pygame
 # =============================================================================
-pygame.init()
-screen = pygame.display.set_mode((WIDTH, HEIGTH))
+# pygame.init()
+screen = pygame.display.set_mode((WIDTH, HEIGTH), pygame.NOFRAME)
 pygame.display.set_caption('Tetris')
 clock = pygame.time.Clock()
 
@@ -213,7 +236,7 @@ def checkRow(tetros):
             falled = {} 
             POINTS += 1 
             if POINTS % 10 == 0: # ever 10 points
-                fall_time -= 1 # increase the speed of tha falling
+                fall_time -= FPS//60 # increase the speed of tha falling
             for t in sorted(tetros.keys(), key=lambda xy: xy[1]):
                 if t[1] < row:
                     falled.update({(t[0], t[1]+TILESIZE): tetros[t]})

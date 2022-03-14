@@ -1,5 +1,5 @@
 { 
-    "dimensions": (600, 950),
+    "dimensions": "auto", #(600, 950),
     "FPS": 60,
-    "tilesize": 50
+    "tilesize": "auto"
 }
