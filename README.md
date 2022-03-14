@@ -26,10 +26,12 @@ A other usefull Features is, that you can set some Window-Properties. To do so y
 
 ![Bildschirmfoto_2022-03-12_19-48-21](https://user-images.githubusercontent.com/98593245/158030907-0868a3ae-637f-44eb-92f7-66550bd88027.png)
 
-As you can see in the Screenshot, you can change currently 3 Values (dimension, fps, tilesize):  
-**dimensions:** here you need a tupel with 2 Values -> 1st is the width of the window and the 2nd is the height of the window  
-**FPS:** here you need an integer that define the Frames per seconds  
-**tilesize:** This value define the size of the bricks of the Tetrominos, the value must be divisible without remainder by the width and height of the window  
+As you can see in the Screenshot, you can change currently 4 Values (dimension, fps, tilesize, windowframe):  
+
+- **dimensions:** here you can set a tupel with 2 Values (1st is the width of the window and the 2nd is the height of the window) or you set it to "auto" and it will automatically set the Window size (Also depending on the given tilesize)
+- **FPS:** here you need an integer that define the Frames per seconds  
+- **tilesize:** You can set it to an integer who define the size of the Tetrominobricks and must be divisible without remainder by the width and height of the window or you set it to "auto" where it automatically set the size
+- **windowframe:** If set to "standart" the window is like a normal window, but if set to "noframe" the window is like a ![splash-screen-window](https://en.wikipedia.org/wiki/Splash_screen)
 
 You need to have all 3 Values in the file, otherwise the standard values are used. The same is true if the file does not exist or the values do not follow the requirements.
 
