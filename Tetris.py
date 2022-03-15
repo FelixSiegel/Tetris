@@ -3,7 +3,9 @@
 """
 Created on Wed Feb 16 09:54:05 2022
 
-@author: felix
+contributors: Infinity Coding
+
+A Tetris imitation written in Python and using the Python-libary PyGame.
 """
 
 import pygame
@@ -21,7 +23,8 @@ try:
     settings = eval(fd.read())
     fd.close()
     
-    if settings["dimensions"] != "auto":
+    if settings["dimensions"] != "auto" and settings["tilesize"] != "auto":
+        # checking if rules heeded
         if settings["dimensions"][0] % settings["tilesize"] != 0 or \
             settings["dimensions"][1] % settings["tilesize"] != 0:
             raise ValueError
@@ -51,14 +54,20 @@ if settings["dimensions"] == "auto": # if the dimensions set to automaticly
     # make sure that (width % tilesize) equals zero:
     m_width += settings["tilesize"] - m_width%settings["tilesize"] 
     settings["dimensions"] = (m_width, m_height) # confirm new dimensions
-        
 
+elif settings["tilesize"] == "auto": # if dimensions given but tilesize set to auto
+    settings["dimensions"][1] -= settings["dimensions"][1]%20 # tailor height so, that 20 rows fit into
+    tilesize = settings["dimensions"][1] // 20 # set tilesize so, that 20 rows can fit into the height
+    settings["dimensions"][0] -= settings["dimensions"][0]%tilesize # tailor width
+    settings["tilesize"] = tilesize # confirm tilesize
+    del tilesize # del temp variable
+        
 # =============================================================================
 # set initial variables
 # =============================================================================
 
 WIDTH = settings["dimensions"][0]
-HEIGTH = settings["dimensions"][1]
+HEIGHT = settings["dimensions"][1]
 TILESIZE = settings["tilesize"]
 FPS = settings["fps"]
 POINTS = 0
@@ -68,9 +77,9 @@ POINTS = 0
 # =============================================================================
 
 if settings["windowframe"] == "noframe":
-    screen = pygame.display.set_mode((WIDTH, HEIGTH), pygame.NOFRAME)
-else:
-    screen = pygame.display.set_mode((WIDTH, HEIGTH))
+    screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.NOFRAME)
+else: screen = pygame.display.set_mode((WIDTH, HEIGHT))
+
 pygame.display.set_caption('Tetris')
 clock = pygame.time.Clock()
 
@@ -159,7 +168,7 @@ shapes = [I, J, L, O, S, T, Z]
 shape_colors = [(13, 105, 105), (31, 25, 90), (100, 62, 14),
                 (110, 99, 13), (23, 75, 0), (46, 20, 40), (92, 0, 0)] # define color to the shapes
 
-tetrominos = {} # dict for save the tetrominos, that will draw
+tetrominos = {} # dict for saving the tetrominos, that will drawn
 
 # =============================================================================
 # Function for render Textes and Infos
@@ -169,7 +178,7 @@ def debug(info, pos=(10, 10), text_size=10, centered=False, offset=0):
     font = pygame.font.SysFont("liberationserif", text_size)
     text = font.render(str(info), True, (255, 255, 255))
     if centered:
-        center = [WIDTH//2-text.get_width()//2, HEIGTH//2-text.get_height()//2]
+        center = [WIDTH//2-text.get_width()//2, HEIGHT//2-text.get_height()//2]
         center[1] += text.get_height()*offset
         pos = center
     screen.blit(text, pos)
@@ -289,7 +298,7 @@ class Tetromino():
                 if shape[y_offset][x_offset] == '1':
                     if x + x_offset*TILESIZE < 0 or x + x_offset*TILESIZE >= WIDTH:
                         return True  # x
-                    if y + y_offset*TILESIZE >= HEIGTH:
+                    if y + y_offset*TILESIZE >= HEIGHT:
                         return True  # y
                     if (x + x_offset*TILESIZE, y + y_offset*TILESIZE) in tetrominos:
                         return True  # collide with a other Tetromino
@@ -421,14 +430,19 @@ while True:
             move_count[1] = FPS//7.5 # if FPS = 30 its 4
     else:
         move_count[1] = 0
+        
+    if keys[pygame.K_LCTRL] and keys[pygame.K_q]: # short cut for closing Window(Strg+Q)
+        pygame.quit()
+        close_program()
 
-    if userMoved == True:
-        if c_tetromino.fall() == False:
-            falled = True
-        else:
-            c_tetromino.fall(y=-TILESIZE)
+    if userMoved == True: 
+        # if Tetromino falled but user Moved, check if it can fall further or not
+        if c_tetromino.fall() == False: # if not
+            falled = True # set Falled finally to True
+        else: # otherwise
+            c_tetromino.fall(y=-TILESIZE) # falled = True + previous Position
 
-    # following is for the falling etc
+    # following is for the falling and drawing
     if count % fall_time == 0 or userMoved == True:
         if falled == True:  # if Tetromino has reached the bottom
             # adding to the other falled Tetrominos
@@ -459,7 +473,7 @@ while True:
 
         if count % fall_time == 0:
             falled = not(c_tetromino.fall())
-
+            
         pygame.display.update()
         
     clock.tick(FPS)

@@ -2,9 +2,10 @@
 
 ## Installation
 
-What you need:
-- Python3
-- PyGame-Libary (install it via `pip install pygame` from the terminal
+What you need:  
+
+- Python3  
+- PyGame-Libary (install it via `pip install pygame` from the terminal)  
 - The both datas `Tetris.py` and `Settings.txt`, last isn´t necessary but it allows you to change the Window-Settings
 
 Then run `Tetris.py` and have fun :)
@@ -13,29 +14,40 @@ Then run `Tetris.py` and have fun :)
 
 ![Bildschirmfoto_2022-03-12_20-07-05](https://user-images.githubusercontent.com/98593245/158031498-ca1a6a07-a166-47f1-8f3f-c2f9c8e9b5e2.png)
 
-- all shapes (I,J,L,O,S,T,Z) included and have also different colors
-- you can **Rotate** (`Arrow-Up`-Key) and **move** the Tetromino to **left** (`Left-Arrow`-Key) and **right** (`Right-Arrow`-Key) Side and also **down** with the `Down-Arrow`-Key
-- with the `Space`-Key you can drop the falling Tetromino to the bottom
+- all shapes (I,J,L,O,S,T,Z) included and also with different colors
 - collides with Border and other Tetrominos will dectected
 - filled rows are detected and deleted + rows above will fallen
-- you can Pause the Game with `p`-Key and resume by pressing any key
-- if the game is over you can restart the Game after 1 second by pressing any key
 - the falltime becoms faster every 10 completed Rows
+- Controlling:
+    * you can **Rotate** (`Arrow-Up`-Key) and **move** the Tetromino to **left** (`Left-Arrow`-Key) and **right** (`Right-Arrow`-Key) Side and also **down** with the `Down-Arrow`-Key
+    * with `Space`-Key you can **drop** the falling Tetromino to the bottom
+    * you can **pause** the Game with `p`-Key and **resume** by pressing **any key**
+    * if the game is over you can **restart** the Game after 1 second by pressing **any key**
+    * with the shortcut `Strg + Q` can you **close** the window (recommended for Splash-Screen-Mode)
 
 A other usefull Features is, that you can set some Window-Properties. To do so you need to create a textfile named `settings.txt` which needs to be in the same directory as the programm.
 
-![Bildschirmfoto_2022-03-12_19-48-21](https://user-images.githubusercontent.com/98593245/158030907-0868a3ae-637f-44eb-92f7-66550bd88027.png)
+```python
+{
+    "dimensions": "auto",
+    "tilesize": "auto",
+    "fps": 60,
+    "windowframe": "noframe"
+}
+```
 
-As you can see in the Screenshot, you can change currently 4 Values (dimension, fps, tilesize, windowframe):  
+As you can see in the text above, you can change currently 4 Values (dimension, tilesize, fps, windowframe):  
 
-- **dimensions:** here you can set a tupel with 2 Values (1st is the width of the window and the 2nd is the height of the window) or you set it to "auto" and it will automatically set the Window size (Also depending on the given tilesize)
-- **FPS:** here you need an integer that define the Frames per seconds  
-- **tilesize:** You can set it to an integer who define the size of the Tetrominobricks and must be divisible without remainder by the width and height of the window or you set it to "auto" where it automatically set the size
-- **windowframe:** If set to "standart" the window is like a normal window, but if set to "noframe" the window is like a ![splash-screen-window](https://en.wikipedia.org/wiki/Splash_screen)
+- **dimensions:**
+    * Defaults to "auto", which means that the program tries to adjust the window size to your screen size. (It also depends on the set tilesize)
+    * Otherwise it must be a list with two entries - first the width and then the height of the window (for example: [600, 1000])
+- **FPS:**
+    * Default set to the integer 60 (mean 60 Frames per seconds)
+- **tilesize:**
+    * Default set to "auto", which means that the program tries to adjust the Size of the bricks from the Tetrominos to the best that fits into the Window (It also depends on the set tilesize)
+    * Otherwise it must be an integer that defines the Size in pixels
+- **windowframe:**
+    * Standart set to "standart" that means that a normal Window will created
+    * Otherwise you can set it to "noframe", where a ![splash-screen Window](https://en.wikipedia.org/wiki/Splash_screen) will created
 
-You need to have all 3 Values in the file, otherwise the standard values are used. The same is true if the file does not exist or the values do not follow the requirements.
-
-
-## Conclusion
-
-Currently there are no known bugs, if you notice any or if you have any other ideas to make the game better, please feel free to report or suggest them.
+All 4 values must be contained in the file, otherwise the default values are used automatically. The same is true if the file does not exist or the values do not follow the requirements.
