@@ -2,5 +2,5 @@
     "dimensions": "auto",
     "tilesize": "auto",
     "fps": 60,
-    "windowframe": "noframe" # You can set to "noframe" to create a splash-screen-window
+    "windowframe": "standart" # You can set to "noframe" to create a splash-screen-window
 }

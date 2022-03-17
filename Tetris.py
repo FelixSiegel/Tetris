@@ -6,6 +6,8 @@ Created on Wed Feb 16 09:54:05 2022
 contributors: Infinity Coding
 
 A Tetris imitation written in Python and using the Python-libary PyGame.
+
+For more infos go to the documention at the GitHub-Repository (https://github.com/FelixSiegel/Tetris)
 """
 
 import pygame
@@ -19,9 +21,8 @@ pygame.init()
 # =============================================================================
 
 try:
-    fd = open("settings.txt")
-    settings = eval(fd.read())
-    fd.close()
+    with open("settings.txt") as f_in:
+        settings = eval(f_in.read())
     
     if settings["dimensions"] != "auto" and settings["tilesize"] != "auto":
         # checking if rules heeded
@@ -35,33 +36,27 @@ except: # if file not found or not correct
                 "fps": 60,
                 "windowframe": "standart"
                 }
-
-# =============================================================================
-# If some Values set to auto -> automaticly set them
-# =============================================================================
-
-if settings["dimensions"] == "auto": # if the dimensions set to automaticly
-
-    m_width, m_height = pygame.display.list_modes()[0] # get max height and width
+finally: # finally if some values set to auto -> automatically set them
+    if settings["dimensions"] == "auto": # if the dimensions set to auto
+        m_width, m_height = pygame.display.list_modes()[0] # get max display height and width
+        if settings["tilesize"] == "auto":
+            # if auto tilesizing on: set it so that 20 rows can created
+            settings["tilesize"] = (m_height - m_height%20) // 20 
+            
+        # set window height to max possible with one row place
+        m_height -= m_height%settings["tilesize"] + settings["tilesize"]
+        m_width = int((m_height/10)*6) # set window width to 6/10 of the height
+        # make sure that (width % tilesize) equals zero:
+        m_width += settings["tilesize"] - m_width%settings["tilesize"] 
+        settings["dimensions"] = (m_width, m_height) # confirm new dimensions
     
-    if settings["tilesize"] == "auto":
-        # if auto tilesizing on: set it so that 20 rows fit into it
-        settings["tilesize"] = (m_height - m_height%20) // 20 
-        
-    # set window height to max possible with one row place
-    m_height -= m_height%settings["tilesize"] + settings["tilesize"]
-    m_width = int((m_height/10)*6) # set window width to 6/10 of the height
-    # make sure that (width % tilesize) equals zero:
-    m_width += settings["tilesize"] - m_width%settings["tilesize"] 
-    settings["dimensions"] = (m_width, m_height) # confirm new dimensions
-
-elif settings["tilesize"] == "auto": # if dimensions given but tilesize set to auto
-    settings["dimensions"][1] -= settings["dimensions"][1]%20 # tailor height so, that 20 rows fit into
-    tilesize = settings["dimensions"][1] // 20 # set tilesize so, that 20 rows can fit into the height
-    settings["dimensions"][0] -= settings["dimensions"][0]%tilesize # tailor width
-    settings["tilesize"] = tilesize # confirm tilesize
-    del tilesize # del temp variable
-        
+    elif settings["tilesize"] == "auto": # if dimensions given but tilesize set to auto
+        settings["dimensions"][1] -= settings["dimensions"][1]%20 # set height so that 20 rows fit into it
+        tilesize = settings["dimensions"][1] // 20 # set tilesize so, that 20 rows can fit into the height
+        settings["dimensions"][0] -= settings["dimensions"][0]%tilesize # tailor width
+        settings["tilesize"] = tilesize # confirm tilesize
+        del tilesize # del temp variable
+    
 # =============================================================================
 # set initial variables
 # =============================================================================
@@ -249,7 +244,7 @@ def checkRow(tetros):
             falled = {} 
             POINTS += 1 
             if POINTS % 10 == 0: # ever 10 points
-                fall_time -= FPS//60 # increase the speed of tha falling
+                fall_time -= FPS//60 # increase falltime of Tetromino
             for t in sorted(tetros.keys(), key=lambda xy: xy[1]):
                 if t[1] < row:
                     falled.update({(t[0], t[1]+TILESIZE): tetros[t]})
@@ -334,16 +329,18 @@ def gameOver():
                 pygame.quit()
                 close_program()
             if event.type == pygame.KEYUP:
-                if count >= FPS: # cou can restart only after 1sec, that you cant spam
-                    # reset all for restart (without c_tetromino, cause it doesn't fall yet)
+                if count >= FPS: # cou can restart only after 1 second
+                    # reset variables (without c_tetromino, cause it doesn't fall yet)
                     tetrominos = {}
-                    POINTS = 0
-                    count = 0
-                    fall_time = FPS//3
+                    POINTS, count = 0, 0
+                    fall_time = FPS//2
                     move_count = [0, 0]
-                    falled = False
-                    userMoved = False
+                    falled, userMoved = False, False
                     return
+        pressedKeys = pygame.key.get_pressed()
+        if pressedKeys[pygame.K_LCTRL] and pressedKeys[pygame.K_q]:
+            pygame.quit()
+            close_program()
         clock.tick(30)
 
 # =============================================================================
@@ -357,11 +354,11 @@ def pause():
     debug("Press any key to continue",
           text_size=TILESIZE, centered=True, offset=0.5)
     while True:
-        for event in pygame.event.get():  # cheking for events
+        for event in pygame.event.get([pygame.QUIT, pygame.KEYDOWN]):  # cheking for events
             if event.type == pygame.QUIT:  # if the user close the Window
                 pygame.quit()
                 close_program()
-            if event.type == pygame.KEYUP:
+            if event.type == pygame.KEYDOWN:
                 return
         clock.tick(30)
 
@@ -370,17 +367,16 @@ def pause():
 # =============================================================================
 
 newshape = getNewShape() # getting a random shape
-c_tetromino = Tetromino(newshape[0], newshape[1]) # make a Instance to Tetromino
+c_tetromino = Tetromino(newshape[0], newshape[1]) # make a Instance of Tetromino
 
 falled = False 
 count = 0 # past time
-fall_time = FPS//3 # time, when to update the screen
+fall_time = FPS//2 # time, when to update the screen
 move_count = [0, 0] # need, that the moving isn't to speedy
 
 # =============================================================================
 # Main Game-Loop:
 # =============================================================================
-
 
 while True:
     count += 1
@@ -389,7 +385,7 @@ while True:
     userMoved = False
     
     #checking for events
-    for event in pygame.event.get():
+    for event in pygame.event.get([pygame.QUIT, pygame.KEYDOWN]):
         if event.type == pygame.QUIT:  # if user close the Window
             pygame.quit()
             close_program()
@@ -407,7 +403,6 @@ while True:
                 if not(c_tetromino.fall()): # if it can't move down, cause it's at bottom
                     falled = True # set falled to True
                 userMoved = True
-        if event.type == pygame.KEYUP:
             if event.key == pygame.K_p: # if P pressed:
                 pause()
     
@@ -417,63 +412,55 @@ while True:
     if keys[pygame.K_LEFT]:
         if move_count[0] <= 0:
             c_tetromino.fall(x=-TILESIZE, y=0)
-            falled = False
-            userMoved = True
+            falled, userMoved = False, True
             move_count[0] = FPS//7.5 # if FPS = 30 its 4
-    else:
-        move_count[0] = 0
+    else: move_count[0] = 0
+    
     if keys[pygame.K_RIGHT]:
         if move_count[1] <= 0:
             c_tetromino.fall(x=TILESIZE, y=0)
-            falled = False
-            userMoved = True
+            falled, userMoved = False, True
             move_count[1] = FPS//7.5 # if FPS = 30 its 4
-    else:
-        move_count[1] = 0
+    else: move_count[1] = 0
         
     if keys[pygame.K_LCTRL] and keys[pygame.K_q]: # short cut for closing Window(Strg+Q)
         pygame.quit()
         close_program()
 
+    # if Tetromino falled but user Moved, check if it can fall further or not
     if userMoved == True: 
-        # if Tetromino falled but user Moved, check if it can fall further or not
         if c_tetromino.fall() == False: # if not
             falled = True # set Falled finally to True
-        else: # otherwise
-            c_tetromino.fall(y=-TILESIZE) # falled = True + previous Position
+        else: c_tetromino.fall(y=-TILESIZE) # falled = True + previous Position
 
     # following is for the falling and drawing
     if count % fall_time == 0 or userMoved == True:
         if falled == True:  # if Tetromino has reached the bottom
-            # adding to the other falled Tetrominos
-            addFalled(c_tetromino.get_shape())
-            # checking for completed rows
-            tetrominos = checkRow(tetrominos)
+            addFalled(c_tetromino.get_shape()) # add it to other falled Tetrominos
+            tetrominos = checkRow(tetrominos) # checking for completed rows
+            
             newshape = getNewShape()  # get new Shape
             c_tetromino = Tetromino(newshape[0], newshape[1]) # creating new Instance to Tetromino
             falled = False  # set falled back to False
 
             if c_tetromino.fall() == False: # if the new Tetromino can't move the game is over
-                c_tetromino.fall(y = -TILESIZE) 
                 screen.fill('black')
                 drawTetrominos(cur_shapeToTetros(
                     c_tetromino.get_shape()))  # draw Tetrominos
                 pygame.display.update() # updating Display
                 gameOver() # and call the gameover function
-            else:
-                c_tetromino.fall(y=-TILESIZE) # if it can fall > set it to startposition
+            else: c_tetromino.fall(y=-TILESIZE) # if it can fall > set it to startposition
 
         screen.fill('black')
 
         drawTetrominos(cur_shapeToTetros(
             c_tetromino.get_shape()))  # draw Tetrominos
 
-        debug(str(round(clock.get_fps())) + " fps")     # show FPS
-        debug("Points: " + str(POINTS), pos=(10, 25))     # show Points
+        debug(str(round(clock.get_fps())) + " fps")   # show FPS
+        debug("Points: " + str(POINTS), pos=(10, 25)) # show Points
 
         if count % fall_time == 0:
             falled = not(c_tetromino.fall())
             
         pygame.display.update()
-        
     clock.tick(FPS)
