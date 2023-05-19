@@ -47,7 +47,7 @@ As you can see in the text above, you can change currently 4 Values (dimension, 
     * Default set to "auto", which means that the program tries to adjust the Size of the bricks from the Tetrominos to the best that fits into the Window (It also depends on the set tilesize)
     * Otherwise it must be an integer that defines the Size in pixels
 - **windowframe:**
-    * Standart set to "standart" that means that a normal Window will created
+    * Default set to "default" that means that a normal Window will created
     * Otherwise you can set it to "noframe", where a ![splash-screen Window](https://en.wikipedia.org/wiki/Splash_screen) will created
 
 All 4 values must be contained in the file, otherwise the default values are used automatically. The same is true if the file does not exist or the values do not follow the requirements.

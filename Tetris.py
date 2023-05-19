@@ -34,7 +34,7 @@ except: # if file not found or not correct
                 "dimensions": "auto",
                 "tilesize": "auto",
                 "fps": 60,
-                "windowframe": "standart"
+                "windowframe": "default"
                 }
 finally: # finally if some values set to auto -> automatically set them
     if settings["dimensions"] == "auto": # if the dimensions set to auto
